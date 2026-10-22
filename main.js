@@ -1,65 +1,78 @@
-const form = document.querySelector("#tambah-barang form");
-const tabel = document.querySelector("#data-barang tbody");
-const kolomCari = document.querySelector("#cari-barang");
+"use strict";
 
-if (form && tabel) {
-  form.addEventListener("submit", function (event) {
+const form = document.querySelector("#form-barang");
+const tabel = document.querySelector("#daftar-barang");
+const pencarian = document.querySelector("#cari-barang");
+const pesan = document.querySelector("#pesan");
+const infoJumlah = document.querySelector("#info-jumlah");
+
+function tampilkanPesan(teks, jenis) {
+  pesan.textContent = teks;
+  pesan.className = `message ${jenis}`;
+}
+
+function perbaruiJumlah() {
+  const total = Array.from(tabel.rows).filter((baris) => !baris.hidden).length;
+
+  infoJumlah.textContent = `Menampilkan ${total} data barang.`;
+}
+
+function terapkanPencarian() {
+  const kataKunci = pencarian.value.trim().toLowerCase();
+
+  Array.from(tabel.rows).forEach(function (baris) {
+    baris.hidden = !baris.textContent.toLowerCase().includes(kataKunci);
+  });
+
+  perbaruiJumlah();
+}
+
+form.addEventListener("submit", function (event) {
+  const kode = document.querySelector("#kode").value.trim().toUpperCase();
+  const jumlahTeks = document.querySelector("#jumlah").value;
+  const hargaTeks = document.querySelector("#harga").value;
+  const jumlah = Number(jumlahTeks);
+  const harga = Number(hargaTeks);
+
+  if (!/^BRG-\d+$/.test(kode)) {
     event.preventDefault();
+    tampilkanPesan("Kode harus berformat BRG- diikuti angka.", "error");
+    return;
+  }
 
-    const kode = document.querySelector("#kode").value.trim();
-    const nama = document.querySelector("#nama").value.trim();
-    const kategori = document.querySelector("#kategori").value;
-    const jumlah = document.querySelector("#jumlah").value;
-    const kondisi = document.querySelector("#kondisi").value;
-
-    // Validasi kode: BRG- diikuti angka
-    if (!/^BRG-\d+$/.test(kode)) {
-      alert("Kode barang harus menggunakan format BRG-001.");
-      return;
-    }
-
-    // Periksa kode duplikat
-    const kodeSudahAda = Array.from(tabel.rows).some(function (baris) {
-      return (
-        baris.cells[0].textContent.trim().toUpperCase() === kode.toUpperCase()
-      );
-    });
-
-    if (kodeSudahAda) {
-      alert("Kode barang sudah digunakan. Gunakan kode lain.");
-      return;
-    }
-
-    // Validasi jumlah
-    if (
-      jumlah === "" ||
-      !Number.isFinite(Number(jumlah)) ||
-      Number(jumlah) <= 0
-    ) {
-      alert("Jumlah barang harus berupa angka lebih dari 0.");
-      return;
-    }
-
-    // Buat baris baru
-    const baris = tabel.insertRow();
-    [kode, nama, kategori, jumlah, kondisi].forEach(function (data) {
-      const sel = baris.insertCell();
-      sel.textContent = data;
-    });
-
-    form.reset();
-    alert("Barang berhasil ditambahkan ke tabel!");
+  const kodeDuplikat = Array.from(tabel.rows).some(function (baris) {
+    return baris.cells[0].textContent.trim().toUpperCase() === kode;
   });
-}
 
-// Fitur pencarian langsung
-if (kolomCari && tabel) {
-  kolomCari.addEventListener("input", function () {
-    const kataKunci = kolomCari.value.toLowerCase();
+  if (kodeDuplikat) {
+    event.preventDefault();
+    tampilkanPesan(
+      "Kode sudah ada pada tabel contoh. Gunakan kode lain.",
+      "error",
+    );
+    return;
+  }
 
-    Array.from(tabel.rows).forEach(function (baris) {
-      const teksBaris = baris.textContent.toLowerCase();
-      baris.hidden = !teksBaris.includes(kataKunci);
-    });
-  });
-}
+  if (!Number.isInteger(jumlah) || jumlah <= 0) {
+    event.preventDefault();
+    tampilkanPesan("Jumlah harus berupa bilangan bulat lebih dari 0.", "error");
+    return;
+  }
+
+  if (!Number.isInteger(harga) || harga <= 0) {
+    event.preventDefault();
+    tampilkanPesan(
+      "Harga satuan harus berupa bilangan bulat lebih dari 0.",
+      "error",
+    );
+  }
+});
+
+pencarian.addEventListener("input", terapkanPencarian);
+
+form.addEventListener("reset", function () {
+  pesan.textContent = "";
+  pesan.className = "message";
+});
+
+perbaruiJumlah();

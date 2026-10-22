@@ -30,7 +30,7 @@
     <main class="container" id="beranda">
       <section class="panel" id="data-barang">
         <h2>Data Inventaris Barang</h2>
-        <p>Daftar barang yang tersedia di lingkungan jurusan.</p>
+        <p>Daftar barang contoh yang tersedia di lingkungan jurusan.</p>
 
         <div class="search-group">
           <label for="cari-barang">Cari Barang</label>
@@ -78,16 +78,14 @@
           </table>
         </div>
 
-        <p class="table-info" id="info-jumlah" aria-live="polite">
-          Total 3 data barang.
-        </p>
+        <p class="table-info" id="info-jumlah" aria-live="polite"></p>
       </section>
 
       <section class="panel" id="tambah-barang">
         <h2>Tambah Data Barang</h2>
-        <p>Lengkapi formulir berikut untuk menambahkan barang.</p>
+        <p>Isi formulir berikut untuk memproses data barang.</p>
 
-        <form id="form-barang">
+        <form id="form-barang" action="simpan.php" method="post">
           <div class="form-group">
             <label for="kode">Kode Barang</label>
             <input
@@ -96,7 +94,7 @@
               name="kode"
               placeholder="Contoh: BRG-004"
               pattern="BRG-[0-9]+"
-              title="Gunakan format BRG- diikuti angka, contoh BRG-004"
+              title="Gunakan format BRG- diikuti angka"
               required
             />
           </div>
@@ -146,8 +144,21 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label for="harga">Harga Satuan (Rp)</label>
+            <input
+              type="number"
+              id="harga"
+              name="harga"
+              min="1"
+              step="1"
+              placeholder="Contoh: 5000000"
+              required
+            />
+          </div>
+
           <div class="form-actions">
-            <button type="submit" class="btn-primary">Simpan Barang</button>
+            <button type="submit" class="btn-primary">Proses Barang</button>
             <button type="reset" class="btn-secondary">Reset</button>
           </div>
 

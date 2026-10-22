@@ -1,0 +1,154 @@
+/* RESET DASAR */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+/* HEADER */
+header {
+  background-color: #142d4e;
+  color: white;
+  text-align: center;
+  padding: 25px 15px;
+}
+
+header h1 {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+/* NAVIGASI FLEXBOX */
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #1e416b;
+  padding: 10px 15px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+nav a:hover {
+  background-color: #315982;
+}
+
+/* KONTEN UTAMA */
+main {
+  max-width: 1100px;
+  margin: 25px auto;
+  padding: 0 15px;
+}
+
+/* SECTION */
+section {
+  background-color: white;
+  margin-bottom: 25px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+section h2 {
+  color: #142d4e;
+  margin-bottom: 10px;
+}
+
+/* TABEL INVENTARIS */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th,
+td {
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #1e416b;
+  color: white;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f1f5f9;
+}
+
+/* FORM */
+form p {
+  margin-bottom: 15px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+button {
+  background-color: #1e416b;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px 5px 0 0;
+}
+
+button:hover {
+  background-color: #142d4e;
+}
+
+/* FOOTER */
+footer {
+  background-color: #142d4e;
+  color: white;
+  text-align: center;
+  padding: 18px;
+}
+
+/* TABLET */
+@media screen and (min-width: 600px) {
+  nav {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  header h1 {
+    font-size: 32px;
+  }
+
+  section {
+    padding: 25px;
+  }
+}
+
+/* DESKTOP */
+@media screen and (min-width: 1025px) {
+  main {
+    padding: 0 25px;
+  }
+
+  header {
+    padding: 35px;
+  }
+}

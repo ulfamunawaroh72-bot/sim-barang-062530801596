@@ -3,75 +3,82 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SIM-Barang</title>
+    <meta
+      name="description"
+      content="Sistem Informasi Manajemen Inventaris Barang Jurusan"
+    />
+    <title>SIM-Barang | Inventaris Jurusan</title>
+
+    <!-- Menghubungkan file CSS -->
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- HEADER -->
+    <!-- Header -->
     <header>
       <h1>SIM-Barang</h1>
-      <p>Sistem Informasi Manajemen Barang</p>
+      <p>Sistem Informasi Manajemen Inventaris Barang Jurusan</p>
     </header>
 
-    <!-- NAVIGASI -->
-    <nav>
+    <!-- Navigasi -->
+    <nav aria-label="Navigasi utama">
       <a href="#beranda">Beranda</a>
       <a href="#data-barang">Data Barang</a>
       <a href="#tambah-barang">Tambah Barang</a>
     </nav>
 
-    <!-- KONTEN UTAMA -->
+    <!-- Konten Utama -->
     <main id="beranda">
-      <!-- DAFTAR BARANG -->
+      <!-- Bagian Data Barang -->
       <section id="data-barang">
         <h2>Data Inventaris Barang</h2>
-        <p>Daftar barang yang tersedia di lingkungan jurusan.</p>
+        <p>Berikut adalah daftar inventaris barang yang tersedia.</p>
 
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Kode</th>
-              <th>Nama Barang</th>
-              <th>Kategori</th>
-              <th>Jumlah</th>
-              <th>Kondisi</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>BRG-001</td>
-              <td>Komputer</td>
-              <td>Elektronik</td>
-              <td>10</td>
-              <td>Baik</td>
-            </tr>
-
-            <tr>
-              <td>BRG-002</td>
-              <td>Meja</td>
-              <td>Furniture</td>
-              <td>15</td>
-              <td>Baik</td>
-            </tr>
-
-            <tr>
-              <td>BRG-003</td>
-              <td>Printer</td>
-              <td>Elektronik</td>
-              <td>3</td>
-              <td>Perlu Perbaikan</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Kode Barang</th>
+                <th scope="col">Nama Barang</th>
+                <th scope="col">Kategori</th>
+                <th scope="col">Jumlah</th>
+                <th scope="col">Kondisi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>BRG-001</td>
+                <td>Komputer</td>
+                <td>Elektronik</td>
+                <td>10</td>
+                <td>Baik</td>
+              </tr>
+              <tr>
+                <td>BRG-002</td>
+                <td>Meja</td>
+                <td>Furniture</td>
+                <td>15</td>
+                <td>Baik</td>
+              </tr>
+              <tr>
+                <td>BRG-003</td>
+                <td>Printer</td>
+                <td>Elektronik</td>
+                <td>3</td>
+                <td>Perlu Perbaikan</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <!-- FORM TAMBAH BARANG -->
+      <!-- Bagian Form Tambah Barang -->
       <section id="tambah-barang">
-        <h2>Form Tambah Barang</h2>
+        <h2>Tambah Data Barang</h2>
+        <p>Isi formulir berikut untuk memasukkan data barang.</p>
 
         <form action="#" method="post">
-          <p>
-            <label for="kode">Kode Barang:</label><br />
+          <div class="form-group">
+            <label for="kode">Kode Barang</label>
             <input
               type="text"
               id="kode"
@@ -79,10 +86,10 @@
               placeholder="Contoh: BRG-004"
               required
             />
-          </p>
+          </div>
 
-          <p>
-            <label for="nama">Nama Barang:</label><br />
+          <div class="form-group">
+            <label for="nama">Nama Barang</label>
             <input
               type="text"
               id="nama"
@@ -90,46 +97,49 @@
               placeholder="Masukkan nama barang"
               required
             />
-          </p>
+          </div>
 
-          <p>
-            <label for="kategori">Kategori:</label><br />
+          <div class="form-group">
+            <label for="kategori">Kategori Barang</label>
             <select id="kategori" name="kategori" required>
-              <option value="">Pilih kategori</option>
+              <option value="">-- Pilih Kategori --</option>
               <option value="Elektronik">Elektronik</option>
               <option value="Furniture">Furniture</option>
               <option value="Alat Tulis">Alat Tulis</option>
             </select>
-          </p>
+          </div>
 
-          <p>
-            <label for="jumlah">Jumlah Barang:</label><br />
+          <div class="form-group">
+            <label for="jumlah">Jumlah Barang</label>
             <input
               type="number"
               id="jumlah"
               name="jumlah"
+              min="1"
               placeholder="Masukkan jumlah barang"
               required
             />
-          </p>
+          </div>
 
-          <p>
-            <label for="kondisi">Kondisi Barang:</label><br />
+          <div class="form-group">
+            <label for="kondisi">Kondisi Barang</label>
             <select id="kondisi" name="kondisi" required>
-              <option value="">Pilih kondisi</option>
+              <option value="">-- Pilih Kondisi --</option>
               <option value="Baik">Baik</option>
               <option value="Rusak Ringan">Rusak Ringan</option>
               <option value="Perlu Perbaikan">Perlu Perbaikan</option>
             </select>
-          </p>
+          </div>
 
-          <button type="submit">Simpan Barang</button>
-          <button type="reset">Reset</button>
+          <div class="form-actions">
+            <button type="submit">Simpan Barang</button>
+            <button type="reset" class="btn-reset">Reset</button>
+          </div>
         </form>
       </section>
     </main>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <footer>
       <p>&copy; 2026 SIM-Barang. Sistem Pengelolaan Inventaris Barang.</p>
     </footer>

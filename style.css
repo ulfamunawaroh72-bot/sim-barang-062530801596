@@ -1,154 +1,251 @@
-/* RESET DASAR */
+/* RESET DAN DASAR */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   background-color: #f1f5f9;
   color: #1e293b;
   line-height: 1.6;
 }
 
-/* HEADER */
-header {
-  background-color: #142d4e;
-  color: white;
-  text-align: center;
-  padding: 25px 15px;
+.container {
+  width: min(1100px, 100% - 32px);
+  margin-inline: auto;
 }
 
-header h1 {
-  font-size: 28px;
-  margin-bottom: 5px;
+/* HEADER */
+.site-header {
+  background-color: #142d4e;
+  color: #ffffff;
+  text-align: center;
+  padding: 32px 0;
+}
+
+.site-header h1 {
+  font-size: 32px;
+  margin-bottom: 6px;
+}
+
+.site-header p {
+  color: #e2e8f0;
 }
 
 /* NAVIGASI FLEXBOX */
-nav {
+.site-nav {
+  background-color: #1e416b;
+}
+
+.nav-links {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  background-color: #1e416b;
-  padding: 10px 15px;
+  align-items: stretch;
+  gap: 4px;
+  padding-block: 8px;
 }
 
-nav a {
-  color: white;
+.nav-links a {
+  color: #ffffff;
   text-decoration: none;
-  padding: 10px;
+  padding: 10px 14px;
   border-radius: 5px;
+  transition: background-color 0.2s;
 }
 
-nav a:hover {
+.nav-links a:hover,
+.nav-links a:focus-visible {
   background-color: #315982;
 }
 
-/* KONTEN UTAMA */
+/* KONTEN DAN PANEL */
 main {
-  max-width: 1100px;
-  margin: 25px auto;
-  padding: 0 15px;
+  padding-block: 28px;
 }
 
-/* SECTION */
-section {
-  background-color: white;
-  margin-bottom: 25px;
-  padding: 20px;
+.panel {
+  background-color: #ffffff;
+  padding: 24px;
+  margin-bottom: 24px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  scroll-margin-top: 16px;
 }
 
-section h2 {
+.panel h2 {
   color: #142d4e;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-/* TABEL INVENTARIS */
+.panel > p {
+  margin-bottom: 14px;
+}
+
+/* PENCARIAN */
+.search-group {
+  margin-top: 20px;
+  margin-bottom: 16px;
+}
+
+.search-group label,
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #1e293b;
+  font: inherit;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #93c5fd;
+  border-color: #2563eb;
+}
+
+/* TABEL */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
+  min-width: 620px;
   border-collapse: collapse;
-  margin-top: 15px;
 }
 
 th,
 td {
+  padding: 12px;
   border: 1px solid #cbd5e1;
-  padding: 10px;
   text-align: left;
 }
 
 th {
   background-color: #1e416b;
-  color: white;
+  color: #ffffff;
 }
 
 tbody tr:nth-child(even) {
   background-color: #f1f5f9;
 }
 
-/* FORM */
-form p {
-  margin-bottom: 15px;
+tbody tr:hover {
+  background-color: #e2e8f0;
 }
 
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #cbd5e1;
-  border-radius: 5px;
-  font-size: 15px;
+.table-info {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #475569;
+}
+
+/* FORM */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 button {
-  background-color: #1e416b;
-  color: white;
+  padding: 11px 18px;
   border: none;
-  padding: 10px 18px;
-  border-radius: 5px;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 600;
   cursor: pointer;
-  margin: 5px 5px 0 0;
+  transition: background-color 0.2s;
 }
 
-button:hover {
+.btn-primary {
+  background-color: #1e416b;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
   background-color: #142d4e;
+}
+
+.btn-secondary {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.btn-secondary:hover {
+  background-color: #cbd5e1;
+}
+
+/* PESAN */
+.message {
+  margin-top: 14px;
+  font-weight: 600;
+}
+
+.message:empty {
+  display: none;
+}
+
+.message.success {
+  color: #166534;
+}
+
+.message.error {
+  color: #b91c1c;
 }
 
 /* FOOTER */
-footer {
+.site-footer {
   background-color: #142d4e;
-  color: white;
+  color: #ffffff;
   text-align: center;
-  padding: 18px;
+  padding: 20px 16px;
 }
 
 /* TABLET */
 @media screen and (min-width: 600px) {
-  nav {
+  .nav-links {
     flex-direction: row;
     justify-content: center;
+    align-items: center;
   }
 
-  header h1 {
-    font-size: 32px;
+  .site-header h1 {
+    font-size: 36px;
   }
 
-  section {
-    padding: 25px;
+  .panel {
+    padding: 28px;
   }
 }
 
 /* DESKTOP */
 @media screen and (min-width: 1025px) {
-  main {
-    padding: 0 25px;
+  .site-header {
+    padding-block: 38px;
   }
 
-  header {
-    padding: 35px;
+  main {
+    padding-block: 32px;
   }
 }

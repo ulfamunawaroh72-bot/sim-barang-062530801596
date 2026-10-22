@@ -8,30 +8,38 @@
       content="Sistem Informasi Manajemen Inventaris Barang Jurusan"
     />
     <title>SIM-Barang | Inventaris Jurusan</title>
-
-    <!-- Menghubungkan file CSS -->
     <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
   </head>
   <body>
-    <!-- Header -->
-    <header>
-      <h1>SIM-Barang</h1>
-      <p>Sistem Informasi Manajemen Inventaris Barang Jurusan</p>
+    <header class="site-header">
+      <div class="container">
+        <h1>SIM-Barang</h1>
+        <p>Sistem Informasi Manajemen Inventaris Barang Jurusan</p>
+      </div>
     </header>
 
-    <!-- Navigasi -->
-    <nav aria-label="Navigasi utama">
-      <a href="#beranda">Beranda</a>
-      <a href="#data-barang">Data Barang</a>
-      <a href="#tambah-barang">Tambah Barang</a>
+    <nav class="site-nav" aria-label="Navigasi utama">
+      <div class="container nav-links">
+        <a href="#beranda">Beranda</a>
+        <a href="#data-barang">Data Barang</a>
+        <a href="#tambah-barang">Tambah Barang</a>
+      </div>
     </nav>
 
-    <!-- Konten Utama -->
-    <main id="beranda">
-      <!-- Bagian Data Barang -->
-      <section id="data-barang">
+    <main class="container" id="beranda">
+      <section class="panel" id="data-barang">
         <h2>Data Inventaris Barang</h2>
-        <p>Berikut adalah daftar inventaris barang yang tersedia.</p>
+        <p>Daftar barang yang tersedia di lingkungan jurusan.</p>
+
+        <div class="search-group">
+          <label for="cari-barang">Cari Barang</label>
+          <input
+            type="search"
+            id="cari-barang"
+            placeholder="Cari kode, nama, kategori, atau kondisi..."
+          />
+        </div>
 
         <div class="table-container">
           <table>
@@ -44,7 +52,7 @@
                 <th scope="col">Kondisi</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="daftar-barang">
               <tr>
                 <td>BRG-001</td>
                 <td>Komputer</td>
@@ -69,14 +77,17 @@
             </tbody>
           </table>
         </div>
+
+        <p class="table-info" id="info-jumlah" aria-live="polite">
+          Total 3 data barang.
+        </p>
       </section>
 
-      <!-- Bagian Form Tambah Barang -->
-      <section id="tambah-barang">
+      <section class="panel" id="tambah-barang">
         <h2>Tambah Data Barang</h2>
-        <p>Isi formulir berikut untuk memasukkan data barang.</p>
+        <p>Lengkapi formulir berikut untuk menambahkan barang.</p>
 
-        <form action="#" method="post">
+        <form id="form-barang">
           <div class="form-group">
             <label for="kode">Kode Barang</label>
             <input
@@ -84,6 +95,8 @@
               id="kode"
               name="kode"
               placeholder="Contoh: BRG-004"
+              pattern="BRG-[0-9]+"
+              title="Gunakan format BRG- diikuti angka, contoh BRG-004"
               required
             />
           </div>
@@ -106,6 +119,7 @@
               <option value="Elektronik">Elektronik</option>
               <option value="Furniture">Furniture</option>
               <option value="Alat Tulis">Alat Tulis</option>
+              <option value="Lainnya">Lainnya</option>
             </select>
           </div>
 
@@ -116,6 +130,7 @@
               id="jumlah"
               name="jumlah"
               min="1"
+              step="1"
               placeholder="Masukkan jumlah barang"
               required
             />
@@ -132,16 +147,17 @@
           </div>
 
           <div class="form-actions">
-            <button type="submit">Simpan Barang</button>
-            <button type="reset" class="btn-reset">Reset</button>
+            <button type="submit" class="btn-primary">Simpan Barang</button>
+            <button type="reset" class="btn-secondary">Reset</button>
           </div>
+
+          <p id="pesan" class="message" role="status" aria-live="polite"></p>
         </form>
       </section>
     </main>
 
-    <!-- Footer -->
-    <footer>
-      <p>&copy; 2026 SIM-Barang. Sistem Pengelolaan Inventaris Barang.</p>
+    <footer class="site-footer">
+      <p>&copy; 2026 SIM-Barang — Sistem Pengelolaan Inventaris Barang.</p>
     </footer>
   </body>
 </html>

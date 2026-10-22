@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIM-Barang</title>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <h1>SIM-Barang</h1>
+      <p>Sistem Informasi Manajemen Barang</p>
+    </header>
+
+    <!-- NAVIGASI -->
+    <nav>
+      <a href="#beranda">Beranda</a>
+      <a href="#data-barang">Data Barang</a>
+      <a href="#tambah-barang">Tambah Barang</a>
+    </nav>
+
+    <!-- KONTEN UTAMA -->
+    <main id="beranda">
+      <!-- DAFTAR BARANG -->
+      <section id="data-barang">
+        <h2>Data Inventaris Barang</h2>
+        <p>Daftar barang yang tersedia di lingkungan jurusan.</p>
+
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Nama Barang</th>
+              <th>Kategori</th>
+              <th>Jumlah</th>
+              <th>Kondisi</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>BRG-001</td>
+              <td>Komputer</td>
+              <td>Elektronik</td>
+              <td>10</td>
+              <td>Baik</td>
+            </tr>
+
+            <tr>
+              <td>BRG-002</td>
+              <td>Meja</td>
+              <td>Furniture</td>
+              <td>15</td>
+              <td>Baik</td>
+            </tr>
+
+            <tr>
+              <td>BRG-003</td>
+              <td>Printer</td>
+              <td>Elektronik</td>
+              <td>3</td>
+              <td>Perlu Perbaikan</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- FORM TAMBAH BARANG -->
+      <section id="tambah-barang">
+        <h2>Form Tambah Barang</h2>
+
+        <form action="#" method="post">
+          <p>
+            <label for="kode">Kode Barang:</label><br />
+            <input
+              type="text"
+              id="kode"
+              name="kode"
+              placeholder="Contoh: BRG-004"
+              required
+            />
+          </p>
+
+          <p>
+            <label for="nama">Nama Barang:</label><br />
+            <input
+              type="text"
+              id="nama"
+              name="nama"
+              placeholder="Masukkan nama barang"
+              required
+            />
+          </p>
+
+          <p>
+            <label for="kategori">Kategori:</label><br />
+            <select id="kategori" name="kategori" required>
+              <option value="">Pilih kategori</option>
+              <option value="Elektronik">Elektronik</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Alat Tulis">Alat Tulis</option>
+            </select>
+          </p>
+
+          <p>
+            <label for="jumlah">Jumlah Barang:</label><br />
+            <input
+              type="number"
+              id="jumlah"
+              name="jumlah"
+              placeholder="Masukkan jumlah barang"
+              required
+            />
+          </p>
+
+          <p>
+            <label for="kondisi">Kondisi Barang:</label><br />
+            <select id="kondisi" name="kondisi" required>
+              <option value="">Pilih kondisi</option>
+              <option value="Baik">Baik</option>
+              <option value="Rusak Ringan">Rusak Ringan</option>
+              <option value="Perlu Perbaikan">Perlu Perbaikan</option>
+            </select>
+          </p>
+
+          <button type="submit">Simpan Barang</button>
+          <button type="reset">Reset</button>
+        </form>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>&copy; 2026 SIM-Barang. Sistem Pengelolaan Inventaris Barang.</p>
+    </footer>
+  </body>
+</html>

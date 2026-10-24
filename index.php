@@ -3,95 +3,96 @@
 session_start();
 require_once 'koneksi.php';
 
-// Pastikan pengguna sudah login.
+// Periksa login
 if (!isset($_SESSION['username'], $_SESSION['role'])) {
     header('Location: login.php');
     exit;
 }
 
-$username = $_SESSION['username'];
-$role = $_SESSION['role'];
+// Amankan output HTML
+function h($nilai)
+{
+    return htmlspecialchars((string) $nilai, ENT_QUOTES, 'UTF-8');
+}
+
+// Notifikasi dari proses hapus
+$flashMessage = $_SESSION['flash_message'] ?? '';
+$flashType = $_SESSION['flash_type'] ?? '';
+
+unset($_SESSION['flash_message'], $_SESSION['flash_type']);
+
 $pesan = '';
 $jenisPesan = '';
 $ringkasan = null;
 
-// Proses formulir di file index.php yang sama.
+// Proses tambah barang
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $kode = strtoupper(trim($_POST['kode'] ?? ''));
     $nama = trim($_POST['nama'] ?? '');
     $kategori = filter_var(
-        $_POST['kategori'] ?? null,
+        $_POST['kategori'] ?? '',
         FILTER_VALIDATE_INT
     );
-    $jumlah = filter_var(
-        $_POST['jumlah'] ?? null,
-        FILTER_VALIDATE_INT
-    );
-    $harga = filter_var(
-        $_POST['harga'] ?? null,
-        FILTER_VALIDATE_INT
-    );
+    $jumlahInput = trim($_POST['jumlah'] ?? '');
     $kondisi = trim($_POST['kondisi'] ?? '');
+    $hargaInput = trim($_POST['harga'] ?? '');
 
-    // Validasi data formulir.
     if (!preg_match('/^BRG-\d+$/', $kode)) {
-        $pesan = 'Kode barang harus berformat BRG-004.';
+        $pesan = 'Kode harus berformat BRG-001.';
+        $jenisPesan = 'error';
     } elseif ($nama === '') {
         $pesan = 'Nama barang wajib diisi.';
+        $jenisPesan = 'error';
     } elseif (
         $kategori === false ||
         $kategori === null ||
-        $kategori <= 0
+        $kategori < 1
     ) {
         $pesan = 'Silakan pilih kategori barang.';
+        $jenisPesan = 'error';
     } elseif (
-        $jumlah === false ||
-        $jumlah === null ||
-        $jumlah <= 0
+        $jumlahInput === '' ||
+        !ctype_digit($jumlahInput) ||
+        (int) $jumlahInput < 1
     ) {
         $pesan = 'Jumlah harus berupa bilangan bulat lebih dari 0.';
+        $jenisPesan = 'error';
     } elseif (
-        $harga === false ||
-        $harga === null ||
-        $harga < 0
+        $hargaInput === '' ||
+        !ctype_digit($hargaInput)
     ) {
-        $pesan = 'Harga satuan tidak boleh negatif.';
+        $pesan = 'Harga harus berupa angka bulat minimal 0.';
+        $jenisPesan = 'error';
     } elseif (!in_array(
         $kondisi,
         ['Baik', 'Rusak Ringan', 'Rusak Berat'],
         true
     )) {
         $pesan = 'Kondisi barang tidak valid.';
+        $jenisPesan = 'error';
     } else {
+        $jumlah = (int) $jumlahInput;
+        $harga = (int) $hargaInput;
+
         try {
-            // Pastikan kategori benar-benar tersedia.
-            $stmtKategori = $pdo->prepare(
-                'SELECT nama_kategori
+            $cekKategori = $pdo->prepare(
+                'SELECT id_kategori
                  FROM kategori
                  WHERE id_kategori = ?'
             );
-            $stmtKategori->execute([$kategori]);
-            $namaKategori = $stmtKategori->fetchColumn();
+            $cekKategori->execute([$kategori]);
 
-            if ($namaKategori === false) {
+            if (!$cekKategori->fetch()) {
                 $pesan = 'Kategori tidak ditemukan.';
+                $jenisPesan = 'error';
             } else {
-                // Hitung estimasi nilai aset.
-                $totalEstimasi = $jumlah * $harga;
+                $stmt = $pdo->prepare(
+                    'INSERT INTO barang
+                    (kode_barang, nama_barang, id_kategori,
+                     jumlah, kondisi, harga_satuan)
+                    VALUES (?, ?, ?, ?, ?, ?)'
+                );
 
-                // Simpan data barang ke database.
-                $sql = 'INSERT INTO barang
-                    (
-                        kode_barang,
-                        nama_barang,
-                        id_kategori,
-                        jumlah,
-                        kondisi,
-                        harga_satuan
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?)';
-
-                $stmt = $pdo->prepare($sql);
                 $stmt->execute([
                     $kode,
                     $nama,
@@ -101,76 +102,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $harga
                 ]);
 
-                // Siapkan ringkasan untuk ditampilkan.
                 $ringkasan = [
                     'kode' => $kode,
                     'nama' => $nama,
-                    'kategori' => $namaKategori,
                     'jumlah' => $jumlah,
-                    'kondisi' => $kondisi,
                     'harga' => $harga,
-                    'total' => $totalEstimasi
+                    'total' => $jumlah * $harga
                 ];
 
-                $pesan = 'Barang berhasil ditambahkan ke database!';
+                $pesan = 'Data barang berhasil ditambahkan.';
                 $jenisPesan = 'success';
             }
         } catch (PDOException $e) {
             if ($e->getCode() === '23000') {
                 $pesan = 'Kode barang sudah digunakan.';
             } else {
-                $pesan = 'Gagal menyimpan barang. Periksa koneksi dan struktur database.';
+                $pesan = 'Data gagal disimpan. Periksa kembali database.';
             }
+
             $jenisPesan = 'error';
         }
     }
-
-    if ($ringkasan === null && $jenisPesan === '') {
-        $jenisPesan = 'error';
-    }
 }
 
-// Ambil kategori dari database.
-$kategoriList = $pdo->query(
+// Ambil kategori
+$stmtKategori = $pdo->query(
     'SELECT id_kategori, nama_kategori
      FROM kategori
      ORDER BY nama_kategori'
-)->fetchAll();
+);
+$daftarKategori = $stmtKategori->fetchAll();
 
-// Ambil seluruh data barang untuk tabel inventaris.
-$sqlBarang = 'SELECT
-        b.kode_barang,
-        b.nama_barang,
-        k.nama_kategori,
-        b.jumlah,
-        b.kondisi,
-        b.harga_satuan
-    FROM barang b
-    INNER JOIN kategori k
-        ON b.id_kategori = k.id_kategori
-    ORDER BY b.id_barang DESC';
+// Ambil barang dan nama kategori
+$sqlBarang = "SELECT
+                b.id_barang,
+                b.kode_barang,
+                b.nama_barang,
+                b.id_kategori,
+                b.jumlah,
+                b.kondisi,
+                b.harga_satuan,
+                k.nama_kategori
+              FROM barang b
+              LEFT JOIN kategori k
+                ON b.id_kategori = k.id_kategori
+              ORDER BY b.id_barang DESC";
 
-$barangList = $pdo->query($sqlBarang)->fetchAll();
+$stmtBarang = $pdo->query($sqlBarang);
+$daftarBarang = $stmtBarang->fetchAll();
 
-// Hitung jumlah jenis barang dan total stok.
-$totalJenis = count($barangList);
+// Hitung ringkasan dashboard
+$totalJenis = count($daftarBarang);
 $totalStok = 0;
-$totalNilaiAset = 0;
+$totalAset = 0;
+$totalBarangBaik = 0;
 
-foreach ($barangList as $item) {
+foreach ($daftarBarang as $item) {
     $totalStok += (int) $item['jumlah'];
-    $totalNilaiAset +=
+    $totalAset +=
         (int) $item['jumlah'] * (float) $item['harga_satuan'];
-}
 
-// Fungsi untuk mengamankan output HTML.
-function h($nilai): string
-{
-    return htmlspecialchars(
-        (string) $nilai,
-        ENT_QUOTES,
-        'UTF-8'
-    );
+    if ($item['kondisi'] === 'Baik') {
+        $totalBarangBaik++;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -178,222 +172,116 @@ function h($nilai): string
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM-Barang | Inventaris Jurusan</title>
+    <title>SIM-Barang | Sistem Informasi Barang</title>
     <link rel="stylesheet" href="style.css">
     <script src="main.js" defer></script>
 </head>
 <body>
 
-<header class="site-header">
+<header class="header">
     <div class="container">
         <h1>SIM-Barang</h1>
-        <p>Sistem Informasi Manajemen Inventaris Barang Jurusan</p>
+        <p>Sistem Informasi Manajemen Inventaris Barang</p>
     </div>
 </header>
 
-<nav class="site-nav" aria-label="Navigasi utama">
-    <div class="container nav-links">
-        <a href="#beranda">Beranda</a>
-        <a href="#data-barang">Data Barang</a>
+<nav class="navbar">
+    <div class="container">
+        <a href="index.php">Dashboard</a>
+        <a href="#daftar-inventaris">Data Barang</a>
         <a href="#tambah-barang">Tambah Barang</a>
+
+        <span class="user-info">
+            Login: <?= h($_SESSION['username']) ?>
+            (<?= h($_SESSION['role']) ?>)
+        </span>
+
         <a href="logout.php">Logout</a>
     </div>
 </nav>
 
-<main class="container" id="beranda">
+<main class="container">
 
-    <section class="panel">
-        <h2>Selamat Datang, <?= h($username) ?>!</h2>
-        <p>Role pengguna: <?= h($role) ?></p>
+    <!-- DASHBOARD -->
+    <section class="dashboard">
+        <h2>Dashboard Inventaris</h2>
+        <p>Ringkasan data inventaris barang saat ini.</p>
+
+        <div class="summary-grid">
+            <article class="summary-card">
+                <h3>Total Jenis Barang</h3>
+                <p><?= $totalJenis ?></p>
+            </article>
+
+            <article class="summary-card">
+                <h3>Total Stok Barang</h3>
+                <p><?= $totalStok ?></p>
+            </article>
+
+            <article class="summary-card">
+                <h3>Barang Kondisi Baik</h3>
+                <p><?= $totalBarangBaik ?></p>
+            </article>
+
+            <article class="summary-card">
+                <h3>Estimasi Nilai Aset</h3>
+                <p>Rp <?= number_format($totalAset, 0, ',', '.') ?></p>
+            </article>
+        </div>
     </section>
 
-    <?php if ($pesan !== ''): ?>
-        <section class="panel">
+    <!-- FORM TAMBAH BARANG -->
+    <section id="tambah-barang" class="form-section">
+        <h2>Tambah Data Barang</h2>
+
+        <?php if ($pesan !== ''): ?>
             <p class="message <?= h($jenisPesan) ?>" role="status">
                 <?= h($pesan) ?>
             </p>
-        </section>
-    <?php endif; ?>
+        <?php endif; ?>
 
-    <?php if ($ringkasan !== null): ?>
-        <section class="panel" id="ringkasan">
-            <h2>Ringkasan Pemrosesan Barang</h2>
-            <p>Data berikut berhasil divalidasi dan disimpan.</p>
+        
+<?php if ($ringkasan !== null): ?>
+    <div class="result-card">
+        <h3>Ringkasan Barang yang Ditambahkan</h3>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th>Kategori</th>
-                            <th>Jumlah</th>
-                            <th>Kondisi</th>
-                            <th>Harga Satuan</th>
-                            <th>Total Estimasi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><?= h($ringkasan['kode']) ?></td>
-                            <td><?= h($ringkasan['nama']) ?></td>
-                            <td><?= h($ringkasan['kategori']) ?></td>
-                            <td>
-                                <?= number_format(
-                                    $ringkasan['jumlah'],
-                                    0,
-                                    ',',
-                                    '.'
-                                ) ?>
-                            </td>
-                            <td><?= h($ringkasan['kondisi']) ?></td>
-                            <td>
-                                Rp <?= number_format(
-                                    $ringkasan['harga'],
-                                    0,
-                                    ',',
-                                    '.'
-                                ) ?>
-                            </td>
-                            <td>
-                                Rp <?= number_format(
-                                    $ringkasan['total'],
-                                    0,
-                                    ',',
-                                    '.'
-                                ) ?>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <p>
-                <strong>Perhitungan total estimasi:</strong>
-                <?= number_format(
-                    $ringkasan['jumlah'],
-                    0,
-                    ',',
-                    '.'
-                ) ?>
-                × Rp <?= number_format(
-                    $ringkasan['harga'],
-                    0,
-                    ',',
-                    '.'
-                ) ?>
-                = <strong>Rp <?= number_format(
-                    $ringkasan['total'],
-                    0,
-                    ',',
-                    '.'
-                ) ?></strong>
-            </p>
-        </section>
-    <?php endif; ?>
-
-    <section class="panel">
-        <h2>Ringkasan Inventaris</h2>
-        <p>Total jenis barang: <strong><?= $totalJenis ?></strong></p>
-        <p>Total stok barang: <strong><?= $totalStok ?></strong></p>
-        <p>
-            Total estimasi nilai aset:
-            <strong>Rp <?= number_format(
-                $totalNilaiAset,
-                0,
-                ',',
-                '.'
-            ) ?></strong>
-        </p>
-    </section>
-
-    <section class="panel" id="data-barang">
-        <h2>Data Inventaris Barang</h2>
-        <p>Daftar barang yang tersimpan di database.</p>
-
-        <div class="search-group">
-            <label for="cari-barang">Cari Barang</label>
-            <input
-                type="search"
-                id="cari-barang"
-                placeholder="Cari kode, nama, kategori, atau kondisi..."
-            >
+        <div class="result-row">
+            <span>Kode Barang</span>
+            <strong><?= h($ringkasan['kode']) ?></strong>
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Kode Barang</th>
-                        <th>Nama Barang</th>
-                        <th>Kategori</th>
-                        <th>Jumlah</th>
-                        <th>Kondisi</th>
-                        <th>Harga Satuan</th>
-                    </tr>
-                </thead>
-                <tbody id="daftar-barang">
-                    <?php if (count($barangList) > 0): ?>
-                        <?php foreach ($barangList as $barang): ?>
-                            <tr>
-                                <td><?= h($barang['kode_barang']) ?></td>
-                                <td><?= h($barang['nama_barang']) ?></td>
-                                <td><?= h($barang['nama_kategori']) ?></td>
-                                <td>
-                                    <?= number_format(
-                                        (int) $barang['jumlah'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
-                                </td>
-                                <td><?= h($barang['kondisi']) ?></td>
-                                <td>
-                                    Rp <?= number_format(
-                                        (float) $barang['harga_satuan'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="6">
-                                Belum ada data barang. Silakan tambahkan barang.
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+        <div class="result-row">
+            <span>Nama Barang</span>
+            <strong><?= h($ringkasan['nama']) ?></strong>
         </div>
 
-        <p class="table-info" id="info-jumlah">
-            Menampilkan <?= $totalJenis ?> data barang.
-        </p>
-    </section>
+        <div class="result-row">
+            <span>Jumlah Barang</span>
+            <strong><?= (int) $ringkasan['jumlah'] ?> unit</strong>
+        </div>
 
-    <section class="panel" id="tambah-barang">
-        <h2>Tambah Data Barang</h2>
-        <p>
-            Isi formulir berikut untuk menyimpan barang ke database.
-        </p>
+        <div class="result-row">
+            <span>Harga Satuan</span>
+            <strong>Rp <?= number_format((float) $ringkasan['harga'], 0, ',', '.') ?></strong>
+        </div>
 
-        <form
-            id="form-barang"
-            action="index.php#tambah-barang"
-            method="post"
-        >
+        <div class="result-total">
+            <span>Total Estimasi</span>
+            <strong>Rp <?= number_format((float) $ringkasan['total'], 0, ',', '.') ?></strong>
+        </div>
+    </div>
+<?php endif; ?>
+
+
+        <form id="form-barang" action="index.php#tambah-barang" method="post">
             <div class="form-group">
                 <label for="kode">Kode Barang</label>
                 <input
                     type="text"
                     id="kode"
                     name="kode"
-                    placeholder="Contoh: BRG-006"
+                    placeholder="Contoh: BRG-007"
                     pattern="BRG-[0-9]+"
-                    title="Gunakan format BRG-006"
                     required
                 >
             </div>
@@ -413,9 +301,10 @@ function h($nilai): string
                 <label for="kategori">Kategori Barang</label>
                 <select id="kategori" name="kategori" required>
                     <option value="">-- Pilih Kategori --</option>
-                    <?php foreach ($kategoriList as $kategori): ?>
-                        <option value="<?= (int) $kategori['id_kategori'] ?>">
-                            <?= h($kategori['nama_kategori']) ?>
+
+                    <?php foreach ($daftarKategori as $kat): ?>
+                        <option value="<?= (int) $kat['id_kategori'] ?>">
+                            <?= h($kat['nama_kategori']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -429,6 +318,7 @@ function h($nilai): string
                     name="jumlah"
                     min="1"
                     step="1"
+                    placeholder="Masukkan jumlah"
                     required
                 >
             </div>
@@ -436,7 +326,6 @@ function h($nilai): string
             <div class="form-group">
                 <label for="kondisi">Kondisi Barang</label>
                 <select id="kondisi" name="kondisi" required>
-                    <option value="">-- Pilih Kondisi --</option>
                     <option value="Baik">Baik</option>
                     <option value="Rusak Ringan">Rusak Ringan</option>
                     <option value="Rusak Berat">Rusak Berat</option>
@@ -451,27 +340,130 @@ function h($nilai): string
                     name="harga"
                     min="0"
                     step="1"
+                    placeholder="Contoh: 100000"
                     required
                 >
             </div>
 
+            <p id="pesan-form" class="message" role="status"></p>
+
             <div class="form-actions">
                 <button type="submit" class="btn-primary">
-                    Tambah Barang
+                    Simpan Barang
                 </button>
+
                 <button type="reset" class="btn-secondary">
                     Reset
                 </button>
             </div>
-
-            <p id="pesan-form" class="message" role="status"></p>
         </form>
+    </section>
+
+    <!-- TABEL INVENTARIS -->
+    <section id="daftar-inventaris" class="table-section">
+        <h2>Daftar Inventaris Barang</h2>
+
+        <?php if ($flashMessage !== ''): ?>
+            <p class="message <?= h($flashType) ?>" role="status">
+                <?= h($flashMessage) ?>
+            </p>
+        <?php endif; ?>
+
+        <div class="search-box">
+            <label for="cari-barang">Cari Barang</label>
+            <input
+                type="search"
+                id="cari-barang"
+                placeholder="Cari kode, nama, atau kategori..."
+            >
+            <p id="info-jumlah">
+                Menampilkan <?= $totalJenis ?> data barang.
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama Barang</th>
+                        <th>Kategori</th>
+                        <th>Jumlah</th>
+                        <th>Kondisi</th>
+                        <th>Harga Satuan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody id="daftar-barang">
+                    <?php if (count($daftarBarang) > 0): ?>
+                        <?php foreach ($daftarBarang as $barang): ?>
+                            <tr>
+                                <td><?= h($barang['kode_barang']) ?></td>
+                                <td><?= h($barang['nama_barang']) ?></td>
+                                <td><?= h($barang['nama_kategori'] ?? '-') ?></td>
+                                <td><?= (int) $barang['jumlah'] ?></td>
+                                <td><?= h($barang['kondisi']) ?></td>
+                                <td>
+                                    Rp <?= number_format(
+                                        (float) $barang['harga_satuan'],
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) ?>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a
+                                            class="btn-primary"
+                                            href="edit.php?kode=<?= urlencode($barang['kode_barang']) ?>"
+                                        >
+                                            Edit
+                                        </a>
+
+                                        <form
+                                            action="hapus.php"
+                                            method="post"
+                                            onsubmit="return confirm('Yakin ingin menghapus barang ini?')"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="kode"
+                                                value="<?= h($barang['kode_barang']) ?>"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn-secondary"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7">
+                                Belum ada data barang. Silakan tambahkan barang.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </section>
 
 </main>
 
-<footer class="site-footer">
-    <p>&copy; 2026 SIM-Barang — Sistem Pengelolaan Inventaris Barang.</p>
+<footer class="footer">
+    <div class="container">
+        <p>
+            &copy; <?= date('Y') ?> SIM-Barang -
+            Sistem Informasi Inventaris
+        </p>
+    </div>
 </footer>
 
 </body>

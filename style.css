@@ -1,3 +1,8 @@
+/* ========================================
+   SIM-BARANG
+   CSS FINAL - TEMA BIRU TUA
+======================================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +15,7 @@ html {
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: #f1f5f9;
+  background-color: #f1f5f9;
   color: #1e293b;
   line-height: 1.6;
 }
@@ -20,126 +25,160 @@ body {
   margin-inline: auto;
 }
 
-.site-header {
-  background: #142d4e;
-  color: #fff;
-  text-align: center;
-  padding: 32px 0;
+/* HEADER */
+
+.header {
+  background-color: #142d4e;
+  color: #ffffff;
+  padding: 28px 0;
 }
 
-.site-header h1 {
-  font-size: 32px;
+.header h1 {
+  font-size: 30px;
   margin-bottom: 6px;
 }
 
-.site-nav {
-  background: #1e416b;
+.header p {
+  color: #e2e8f0;
 }
 
-.nav-links {
+/* NAVIGASI */
+
+.navbar {
+  background-color: #1e416b;
+}
+
+.navbar .container {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-block: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
-.nav-links a {
-  color: #fff;
+.navbar a {
+  color: #ffffff;
   text-decoration: none;
-  padding: 10px 14px;
-  border-radius: 5px;
+  padding: 9px 14px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
-.nav-links a:hover,
-.nav-links a:focus-visible {
-  background: #315982;
+.navbar a:hover,
+.navbar a:focus-visible {
+  background-color: #315982;
 }
 
-main {
-  padding-block: 28px;
+.user-info {
+  color: #ffffff;
+  margin-left: auto;
+  padding: 8px;
+  font-size: 14px;
 }
 
-.panel {
-  background: #fff;
+/* KONTEN UTAMA */
+
+main.container {
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+.dashboard,
+.form-section,
+.table-section {
+  background-color: #ffffff;
   padding: 24px;
   margin-bottom: 24px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.07);
   scroll-margin-top: 16px;
 }
 
-.panel h2 {
+.dashboard h2,
+.form-section h2,
+.table-section h2 {
   color: #142d4e;
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+
+/* DASHBOARD */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.summary-card {
+  min-width: 0;
+  background-color: #f8fafc;
+  border: 1px solid #dbe4ef;
+  border-left: 4px solid #1e416b;
+  border-radius: 8px;
+  padding: 18px;
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+
+.summary-grid .summary-card {
+  margin-top: 0;
+}
+
+.summary-card h3 {
+  color: #475569;
+  font-size: 14px;
   margin-bottom: 8px;
 }
 
-.search-group,
+.summary-card p {
+  color: #142d4e;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* FORMULIR */
+
 .form-group {
   margin-top: 16px;
   margin-bottom: 16px;
 }
 
-.search-group label,
-.form-group label {
+.form-group label,
+.search-box label {
   display: block;
   font-weight: 600;
   margin-bottom: 6px;
 }
 
 input,
-select {
+select,
+textarea {
+  display: block;
   width: 100%;
+  max-width: 100%;
   min-height: 42px;
   padding: 10px 12px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  background: #fff;
+  background-color: #ffffff;
   color: #1e293b;
   font: inherit;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   outline: 2px solid #93c5fd;
+  outline-offset: 1px;
   border-color: #2563eb;
 }
 
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-  margin-top: 16px;
-}
-
-table {
-  width: 100%;
-  min-width: 620px;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  text-align: left;
-}
-
-th {
-  background: #1e416b;
-  color: #fff;
-}
-
-tbody tr:nth-child(even) {
-  background: #f1f5f9;
-}
-
-tbody tr:hover {
-  background: #e2e8f0;
-}
-
-.table-info {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #475569;
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
 }
 
 .form-actions {
@@ -149,32 +188,42 @@ tbody tr:hover {
   margin-top: 20px;
 }
 
-button {
-  padding: 11px 18px;
+/* TOMBOL */
+
+button,
+.action-buttons a {
+  display: inline-block;
+  padding: 10px 16px;
   border: none;
   border-radius: 6px;
-  font: inherit;
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 600;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .btn-primary {
-  background: #1e416b;
-  color: #fff;
+  background-color: #1e416b;
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: #142d4e;
+  background-color: #142d4e;
 }
 
 .btn-secondary {
-  background: #e2e8f0;
+  background-color: #e2e8f0;
   color: #1e293b;
 }
 
 .btn-secondary:hover {
-  background: #cbd5e1;
+  background-color: #cbd5e1;
 }
+
+/* PESAN */
 
 .message {
   margin-top: 14px;
@@ -189,35 +238,351 @@ button {
   color: #b91c1c;
 }
 
-.site-footer {
-  background: #142d4e;
-  color: #fff;
+.message.success {
+  color: #15803d;
+}
+
+/* PENCARIAN */
+
+.search-box {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+#info-jumlah {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 14px;
+}
+
+/* TABEL */
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 16px;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+  background-color: #ffffff;
+}
+
+th,
+td {
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background-color: #1e416b;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+tbody tr:hover {
+  background-color: #eaf1f8;
+}
+
+/* TOMBOL AKSI TABEL */
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-buttons form {
+  margin: 0;
+}
+
+/* ========================================
+   HALAMAN HASIL TAMBAH BARANG
+======================================== */
+
+.result-section {
+  width: 100%;
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 28px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.07);
+}
+
+.result-section h2 {
+  color: #142d4e;
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+.result-section .message {
+  margin: 0 0 18px;
+  font-size: 16px;
+}
+
+.result-summary {
+  background-color: #f8fafc;
+  border: 1px solid #dbe4ef;
+  border-left: 4px solid #1e416b;
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.result-summary h3 {
+  color: #1e416b;
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.result-summary .result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 9px 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 15px;
+}
+
+.result-summary .result-row:last-of-type {
+  border-bottom: none;
+}
+
+.result-summary .result-label {
+  color: #64748b;
+}
+
+.result-summary .result-value {
+  color: #142d4e;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.result-summary .result-total {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 2px solid #dbe4ef;
+  color: #142d4e;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.result-actions a {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background-color: #1e416b;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.result-actions a:hover {
+  background-color: #142d4e;
+}
+
+/* FOOTER */
+
+.footer {
+  background-color: #142d4e;
+  color: #ffffff;
   text-align: center;
   padding: 20px 16px;
+  margin-top: 12px;
 }
 
-@media screen and (min-width: 600px) {
-  .nav-links {
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+/* TABLET */
+
+@media screen and (max-width: 1024px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .site-header h1 {
-    font-size: 36px;
-  }
-
-  .panel {
-    padding: 28px;
+  .user-info {
+    margin-left: 0;
   }
 }
 
-@media screen and (min-width: 1025px) {
-  .site-header {
-    padding-block: 38px;
+/* HP */
+
+@media screen and (max-width: 600px) {
+  .container {
+    width: calc(100% - 24px);
   }
 
-  main {
-    padding-block: 32px;
+  .header {
+    padding: 22px 0;
+  }
+
+  .header h1 {
+    font-size: 25px;
+  }
+
+  .navbar .container {
+    align-items: stretch;
+  }
+
+  .user-info {
+    width: 100%;
+  }
+
+  main.container {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .dashboard,
+  .form-section,
+  .table-section {
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+
+  .dashboard h2,
+  .form-section h2,
+  .table-section h2 {
+    font-size: 21px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card p {
+    font-size: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .result-section {
+    padding: 18px;
+    margin: 16px auto;
+  }
+
+  .result-section h2 {
+    font-size: 22px;
+  }
+
+  .result-summary {
+    padding: 14px 16px;
+  }
+
+  .result-summary .result-row {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .result-summary .result-total {
+    font-size: 17px;
+  }
+
+  .result-actions {
+    flex-direction: column;
+  }
+
+  .result-actions a {
+    text-align: center;
+  }
+}
+/* RINGKASAN TAMBAH BARANG */
+.result-card {
+  margin: 18px 0 24px;
+  padding: 20px 24px;
+  background: #f8fafc;
+  border: 1px solid #dbe4ef;
+  border-left: 5px solid #1e416b;
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+.result-card h3 {
+  margin: 0 0 14px;
+  color: #1e416b;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.result-card .result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 15px;
+}
+
+.result-card .result-row span {
+  color: #64748b;
+}
+
+.result-card .result-row strong {
+  color: #142d4e;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.result-card .result-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 14px 16px;
+  background: #eaf1f8;
+  border-radius: 7px;
+  color: #142d4e;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.result-card .result-total strong {
+  color: #1e416b;
+  font-size: 19px;
+}
+
+@media screen and (max-width: 600px) {
+  .result-card {
+    padding: 16px;
+  }
+
+  .result-card .result-row {
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  .result-card .result-total strong {
+    font-size: 17px;
   }
 }
